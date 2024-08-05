@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,27 +14,24 @@ import java.util.stream.Collectors;
 @Service
 public class DataService {
 
-    private final RestTemplate restTemplate;
     private final PlayerDataRepository playerDataRepository;
     private static final Logger logger = LoggerFactory.getLogger(DataService.class);
 
     @Autowired
-    public DataService(RestTemplate restTemplate, PlayerDataRepository playerDataRepository) {
-        this.restTemplate = restTemplate;
+    public DataService(PlayerDataRepository playerDataRepository) {
         this.playerDataRepository = playerDataRepository;
     }
 
-    public List<Player> save(List<PlayerDto> dtos) {
+    public void savePlayerData(String videoId, List<PlayerDto> dtos) {
         List<Player> players = dtos.stream()
-                .map(this::dtoToEntity)
+                .map(dto -> {
+                    Player player = dtoToEntity(dto);
+                    player.setVideoId(videoId); // 비디오 ID 설정
+                    return player;
+                })
                 .collect(Collectors.toList());
-        return playerDataRepository.saveAll(players);
+        playerDataRepository.saveAll(players);
     }
-
-    /**
-     * Fetches player data from an external API, saves it to the database,
-     * and logs the result.
-     */
 
     private Player dtoToEntity(PlayerDto dto) {
         Player player = new Player();
@@ -48,25 +44,19 @@ public class DataService {
         player.setTrackId(dto.getTrackId());
         player.setTeam(dto.getTeam());
         player.setJerseyNumber(dto.getJerseyNumber());
+        player.setVideoId(dto.getVideoId());
         return player;
     }
 
-    /**
-     * Retrieves all players from the database.
-     *
-     * @return List of Player entities
-     */
     public List<Player> getAllPlayers() {
         return playerDataRepository.findAll();
     }
 
-    /**
-     * Retrieves a player by its ID from the database.
-     *
-     * @param id the ID of the player
-     * @return the Player entity, or null if not found
-     */
     public Player getPlayerById(Long id) {
         return playerDataRepository.findById(id).orElse(null);
+    }
+
+    public List<Player> getPlayersByVideoId(String videoId) {
+        return playerDataRepository.findByVideoId(videoId);
     }
 }

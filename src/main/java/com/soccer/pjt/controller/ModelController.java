@@ -1,8 +1,6 @@
 package com.soccer.pjt.controller;
 
-
 import com.soccer.pjt.dto.PlayerDto;
-import com.soccer.pjt.entity.Player;
 import com.soccer.pjt.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +21,13 @@ public class ModelController {
     private DataService service;
 
     @PostMapping("/receive_list")
-    public ResponseEntity<?> receiveList(@RequestBody Map<String, List<List<Integer>>> payload) {
+    public ResponseEntity<?> receiveList(@RequestBody Map<String, Object> payload) {
         try {
-            List<List<Integer>> playerDtos = payload.get("data");
-            if (playerDtos == null) {
-                return ResponseEntity.badRequest().body("No 'data' field in the payload");
+            String videoId = (String) payload.get("videoId");
+            List<List<Integer>> playerDtos = (List<List<Integer>>) payload.get("data");
+
+            if (videoId == null || playerDtos == null) {
+                return ResponseEntity.badRequest().body("Missing 'videoId' or 'data' field in the payload");
             }
 
             // Convert List<List<Integer>> to List<PlayerDto>
@@ -36,8 +36,8 @@ public class ModelController {
                     .collect(Collectors.toList());
 
             // Save the list of PlayerDto
-            List<Player> savedPlayers = service.save(playerDtoList);
-            return ResponseEntity.ok(savedPlayers);
+            service.savePlayerData(videoId, playerDtoList);
+            return ResponseEntity.ok("Data saved successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error processing the data: " + e.getMessage());
         }

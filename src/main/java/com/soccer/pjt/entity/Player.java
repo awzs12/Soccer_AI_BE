@@ -17,17 +17,23 @@ public class Player {
     private Integer y;
     private Integer width;
     private Integer height;
-    private Integer trackId;;
+    private Integer trackId;
     private Integer team;
     private Integer jerseyNumber;
-
-
+    private String videoId;
 
     public Player() {
     }
 
     // Getters and Setters
 
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
 
     public Long getIdx() {
         return idx;
@@ -104,7 +110,7 @@ public class Player {
     @Override
     public String toString() {
         return "Player{" +
-                ",playerClass=" + playerClass +
+                "playerClass=" + playerClass +
                 ", x=" + x +
                 ", y=" + y +
                 ", width=" + width +

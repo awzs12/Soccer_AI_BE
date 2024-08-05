@@ -2,21 +2,25 @@ package com.soccer.pjt.dto;
 
 
 public class PlayerDto {
-
-
     private Integer playerClass;
     private Integer x;
     private Integer y;
     private Integer width;
     private Integer height;
-    private Integer trackId;;
+    private Integer trackId;
     private Integer team;
     private Integer jerseyNumber;
-
+    private String videoId;
 
     // Getters and Setters
 
+    public String getVideoId() {
+        return videoId;
+    }
 
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
 
     public Integer getPlayerClass() {
         return playerClass;
