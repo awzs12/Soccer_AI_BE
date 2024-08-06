@@ -44,7 +44,8 @@ public class DataService {
         player.setTrackId(dto.getTrackId());
         player.setTeam(dto.getTeam());
         player.setJerseyNumber(dto.getJerseyNumber());
-        player.setVideoId(dto.getVideoId());
+        player.setVideoId(dto.getVideoId()); // 비디오 ID 설정
+        player.setFrameNumber(dto.getFrameNumber()); // 프레임 넘버 설정
         return player;
     }
 

@@ -20,20 +20,13 @@ public class Player {
     private Integer trackId;
     private Integer team;
     private Integer jerseyNumber;
-    private String videoId;
+    private String videoId; // 추가된 필드
+    private Integer frameNumber; // 추가된 필드
 
     public Player() {
     }
 
     // Getters and Setters
-
-    public String getVideoId() {
-        return videoId;
-    }
-
-    public void setVideoId(String videoId) {
-        this.videoId = videoId;
-    }
 
     public Long getIdx() {
         return idx;
@@ -107,10 +100,27 @@ public class Player {
         this.jerseyNumber = jerseyNumber;
     }
 
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
+
+    public Integer getFrameNumber() {
+        return frameNumber;
+    }
+
+    public void setFrameNumber(Integer frameNumber) {
+        this.frameNumber = frameNumber;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
-                "playerClass=" + playerClass +
+                "idx=" + idx +
+                ", playerClass=" + playerClass +
                 ", x=" + x +
                 ", y=" + y +
                 ", width=" + width +
@@ -118,6 +128,8 @@ public class Player {
                 ", trackId=" + trackId +
                 ", team=" + team +
                 ", jerseyNumber=" + jerseyNumber +
+                ", videoId='" + videoId + '\'' +
+                ", frameNumber=" + frameNumber +
                 '}';
     }
 
