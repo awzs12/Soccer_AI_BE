@@ -1,27 +1,36 @@
 package com.soccer.pjt.controller;
 
-
-import com.soccer.pjt.entity.VideoData;
-import com.soccer.pjt.service.VideoDataService;
+import com.soccer.pjt.dto.VideoRequestDto;
+import com.soccer.pjt.service.VideoForwardingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/videos")
+@RequestMapping("/api")
 public class VideoController {
 
     @Autowired
-    private VideoDataService service;
+    private VideoForwardingService videoForwardingService;
 
-    @PostMapping
-    public VideoData uploadVideoData(@RequestBody VideoData videoData){
-        return service.saveVideoData(videoData);
-    }
+    @PostMapping("/analyze-video")
+    public ResponseEntity<String> analyzeVideo(@RequestBody VideoRequestDto videoRequest) {
+        String url = videoRequest.getUrl();
+        String path = videoRequest.getPath();
 
-    @GetMapping
-    public List<VideoData> getAllVideoData() {
-        return service.getAllVideoData();
+        try {
+            // URL과 path를 Google Colab으로 전송
+            videoForwardingService.forwardToColab(url, path);
+            return ResponseEntity.ok("{\"message\": \"Video URL forwarded to Colab\"}");
+
+        } catch (Exception e) {
+            // 예외 처리 및 로그
+            System.err.println("Error processing video: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("{\"message\": \"Failed to forward video URL\"}");
+        }
     }
 }
