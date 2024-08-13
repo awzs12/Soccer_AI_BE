@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class VideoForwardingService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String COLAB_ENDPOINT = "https://5ddf-112-170-16-151.ngrok-free.app/api/analyze-video"; // 실제 코랩 서버 URL로 대체
+    private final String COLAB_ENDPOINT = "https://1e36-112-170-16-151.ngrok-free.app/api/analyze-video"; // 실제 코랩 서버 URL로 대체
 
     public void forwardToColab(String url, String path) {
         // VideoRequestDto 객체 생성

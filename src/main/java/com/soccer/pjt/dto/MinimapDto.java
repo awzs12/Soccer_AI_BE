@@ -1,18 +1,18 @@
 package com.soccer.pjt.dto;
 
 public class MinimapDto {
-
     private Integer x;
     private Integer y;
     private Integer frameNumber;
-    private String videoId; // videoId 필드 추가
+    private String videoId;
 
     // Default constructor
     public MinimapDto() {
     }
 
     // Parameterized constructor
-    public MinimapDto(Integer x, Integer y, Integer frameNumber, String videoId) {
+    public MinimapDto( Integer x, Integer y, Integer frameNumber, String videoId) {
+
         this.x = x;
         this.y = y;
         this.frameNumber = frameNumber;
@@ -20,6 +20,7 @@ public class MinimapDto {
     }
 
     // Getters and Setters
+
 
     public Integer getX() {
         return x;
