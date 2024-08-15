@@ -18,7 +18,8 @@ public class MinimapService {
     public List<MinimapDto> getMinimapData(String videoId) {
         List<Minimap> minimapEntities = minimapRepository.findByVideoId(videoId); // videoId로 필터링
         return minimapEntities.stream()
-                .map(minimap -> new MinimapDto(minimap.getX(), minimap.getY(), minimap.getFrameNumber(), minimap.getVideoId()))
+                .map(minimap -> new MinimapDto(minimap.getX(), minimap.getY(), minimap.getFrameNumber(), minimap.getVideoId(),
+                        minimap.getTeam()))
                 .collect(Collectors.toList());
     }
 }

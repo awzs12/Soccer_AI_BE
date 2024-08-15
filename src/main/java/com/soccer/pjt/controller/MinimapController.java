@@ -28,6 +28,9 @@ public class MinimapController {
     @PostMapping("/minimap")
     public ResponseEntity<Void> saveMinimap(@RequestBody MinimapBatchDto minimapBatchDto) {
         String videoId = minimapBatchDto.getVideoId();
+        if (videoId == null || videoId.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         Map<String, List<MinimapDto>> frames = minimapBatchDto.getFrames();
 
         List<Minimap> minimapsToSave = new ArrayList<>();
@@ -42,6 +45,7 @@ public class MinimapController {
                 minimap.setY(minimapDto.getY());
                 minimap.setFrameNumber(Integer.parseInt(frameKey.replace("Frame_", "")));
                 minimap.setVideoId(videoId);
+                minimap.setTeam(minimapDto.getTeam());
                 minimapsToSave.add(minimap);
             }
         }
@@ -74,6 +78,7 @@ public class MinimapController {
                 minimap.setY(minimapDto.getY());
                 minimap.setFrameNumber(minimapDto.getFrameNumber());
                 minimap.setVideoId(videoId);
+                minimap.setTeam(minimap.getTeam());
                 minimapsToSave.add(minimap);
             }
 

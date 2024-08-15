@@ -5,18 +5,20 @@ public class MinimapDto {
     private Integer y;
     private Integer frameNumber;
     private String videoId;
+    private Integer team;
 
     // Default constructor
-    public MinimapDto() {
-    }
+//    public MinimapDto() {
+//    }
 
     // Parameterized constructor
-    public MinimapDto( Integer x, Integer y, Integer frameNumber, String videoId) {
+    public MinimapDto( Integer x, Integer y, Integer frameNumber, String videoId, Integer team) {
 
         this.x = x;
         this.y = y;
         this.frameNumber = frameNumber;
         this.videoId = videoId;
+        this.team = team;
     }
 
     // Getters and Setters
@@ -52,5 +54,13 @@ public class MinimapDto {
 
     public void setVideoId(String videoId) {
         this.videoId = videoId;
+    }
+
+    public Integer getTeam() {
+        return team;
+    }
+
+    public void setTeam(Integer team) {
+        this.team = team;
     }
 }

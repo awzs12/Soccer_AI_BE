@@ -14,18 +14,20 @@ public class Minimap {
     private Integer y;
     private Integer frameNumber;
     private String videoId; // videoId 필드 추가
+    private Integer team;
 
     // Default constructor
     public Minimap() {
     }
 
     // Parameterized constructor
-    public Minimap(Long idx, Integer x, Integer y, Integer frameNumber, String videoId) {
+    public Minimap(Long idx, Integer x, Integer y, Integer frameNumber, String videoId, Integer team) {
         this.idx = idx;
         this.x = x;
         this.y = y;
         this.frameNumber = frameNumber;
         this.videoId = videoId;
+        this.team = team;
     }
 
     // Getter and Setter methods
@@ -69,6 +71,14 @@ public class Minimap {
         this.videoId = videoId;
     }
 
+    public Integer getTeam() {
+        return team;
+    }
+
+    public void setTeam(Integer team) {
+        this.team = team;
+    }
+
     @Override
     public String toString() {
         return "Minimap{" +
@@ -77,6 +87,7 @@ public class Minimap {
                 ", y=" + y +
                 ", frameNumber=" + frameNumber +
                 ", videoId='" + videoId + '\'' +
+                ", team=" + team +
                 '}';
     }
 

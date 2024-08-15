@@ -1,47 +1,37 @@
 package com.soccer.pjt.service;
 
 import com.soccer.pjt.dto.VideoRequestDto;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class VideoForwardingService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final String COLAB_ENDPOINT = "https://1e36-112-170-16-151.ngrok-free.app/api/analyze-video"; // 실제 코랩 서버 URL로 대체
+    private final WebClient webClient = WebClient.create("https://a395-220-120-170-131.ngrok-free.app");
+    private final Set<String> processedRequests = ConcurrentHashMap.newKeySet(); // 요청 ID를 저장할 Set
 
-    public void forwardToColab(String url, String path) {
-        // VideoRequestDto 객체 생성
+    public Mono<String> forwardToColab(String requestId, String url, String path) {
+        // 중복 요청 방지
+        if (processedRequests.contains(requestId)) {
+            return Mono.just("Request already processed");
+        }
+
+        processedRequests.add(requestId);
+
         VideoRequestDto requestDto = new VideoRequestDto(url, path);
 
-        // HTTP 요청 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-
-        // HTTP 요청 객체 생성
-        HttpEntity<VideoRequestDto> requestEntity = new HttpEntity<>(requestDto, headers);
-
-        try {
-            // POST 요청 전송
-            ResponseEntity<String> response = restTemplate.exchange(
-                    COLAB_ENDPOINT,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
-
-            // 응답 상태 코드와 본문 로그
-            System.out.println("Response Status Code: " + response.getStatusCode());
-            System.out.println("Response Body: " + response.getBody());
-
-        } catch (Exception e) {
-            // 예외 처리 및 로그
-            System.err.println("Failed to forward request to Colab: " + e.getMessage());
-            e.printStackTrace();
-        }
+        return webClient.post()
+                .uri("/api/analyze-video")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(requestDto)
+                .retrieve()
+                .bodyToMono(String.class)
+                .doFinally(signalType -> processedRequests.remove(requestId)); // 요청 완료 후 요청 ID 제거
     }
 }
