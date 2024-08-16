@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class VideoForwardingService {
 
-    private final WebClient webClient = WebClient.create("https://a395-220-120-170-131.ngrok-free.app");
+    private final WebClient webClient = WebClient.create("https://b870-112-170-16-150.ngrok-free.app");
     private final Set<String> processedRequests = ConcurrentHashMap.newKeySet(); // 요청 ID를 저장할 Set
 
     public Mono<String> forwardToColab(String requestId, String url, String path) {

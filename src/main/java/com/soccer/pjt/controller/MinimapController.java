@@ -19,20 +19,20 @@ import java.util.Map;
 public class MinimapController {
 
     @Autowired
-    private MiniMapDataRepository minimapRepository;
-
-    @Autowired
     private MinimapService minimapService;
 
-    //미니맵 데이터 저장 (코랩과 통신)
+    @Autowired
+    private MiniMapDataRepository minimapRepository;
+
+    // 미니맵 데이터 저장 (코랩과 통신)
     @PostMapping("/minimap")
-    public ResponseEntity<Void> saveMinimap(@RequestBody MinimapBatchDto minimapBatchDto) {
+    public ResponseEntity<String> saveMinimap(@RequestBody MinimapBatchDto minimapBatchDto) {
         String videoId = minimapBatchDto.getVideoId();
         if (videoId == null || videoId.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Invalid video ID.");
         }
-        Map<String, List<MinimapDto>> frames = minimapBatchDto.getFrames();
 
+        Map<String, List<MinimapDto>> frames = minimapBatchDto.getFrames();
         List<Minimap> minimapsToSave = new ArrayList<>();
 
         for (Map.Entry<String, List<MinimapDto>> entry : frames.entrySet()) {
@@ -50,14 +50,30 @@ public class MinimapController {
             }
         }
 
-        minimapRepository.saveAll(minimapsToSave);
-        return ResponseEntity.ok().build();
+        try {
+            minimapRepository.saveAll(minimapsToSave);
+            return ResponseEntity.ok("Minimap data saved successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving minimap data: " + e.getMessage());
+        }
     }
 
+    // 미니맵 데이터 조회
     @GetMapping("/minimap/{videoId}")
     public ResponseEntity<List<MinimapDto>> getMinimapData(@PathVariable String videoId) {
-        List<MinimapDto> minimapData = minimapService.getMinimapData(videoId);
-        return ResponseEntity.ok(minimapData);
+        if (videoId == null || videoId.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        try {
+            List<MinimapDto> minimapData = minimapService.getMinimapData(videoId);
+            if (minimapData.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(minimapData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     // 클라이언트와의 통신을 위한 미니맵 데이터 저장
@@ -78,13 +94,12 @@ public class MinimapController {
                 minimap.setY(minimapDto.getY());
                 minimap.setFrameNumber(minimapDto.getFrameNumber());
                 minimap.setVideoId(videoId);
-                minimap.setTeam(minimap.getTeam());
+                minimap.setTeam(minimapDto.getTeam()); // Fix: Set the correct team value
                 minimapsToSave.add(minimap);
             }
 
             minimapRepository.saveAll(minimapsToSave);
             return ResponseEntity.ok("Minimap data saved successfully.");
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving minimap data: " + e.getMessage());
         }
@@ -100,12 +115,11 @@ public class MinimapController {
         try {
             List<MinimapDto> minimapData = minimapService.getMinimapData(videoId);
 
-            if (minimapData == null || minimapData.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            if (minimapData.isEmpty()) {
+                return ResponseEntity.noContent().build();
             }
 
             return ResponseEntity.ok(minimapData);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
