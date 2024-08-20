@@ -1,6 +1,7 @@
 package com.soccer.pjt.service;
 
 import com.soccer.pjt.dto.VideoRequestDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class VideoForwardingService {
 
-    private final WebClient webClient = WebClient.create("https://b870-112-170-16-150.ngrok-free.app");
+    private final WebClient webClient;
     private final Set<String> processedRequests = ConcurrentHashMap.newKeySet(); // 요청 ID를 저장할 Set
+
+    public VideoForwardingService(@Value("${colab.server.url}") String baseUrl) {
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .build();
+    }
 
     public Mono<String> forwardToColab(String requestId, String url, String path) {
         // 중복 요청 방지

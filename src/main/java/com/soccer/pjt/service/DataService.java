@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +18,7 @@ public class DataService {
 
     private final PlayerDataRepository playerDataRepository;
     private static final Logger logger = LoggerFactory.getLogger(DataService.class);
+    private final Map<String, String> videoStatusMap = new ConcurrentHashMap<>();
 
     @Autowired
     public DataService(PlayerDataRepository playerDataRepository) {
@@ -26,11 +29,12 @@ public class DataService {
         List<Player> players = dtos.stream()
                 .map(dto -> {
                     Player player = dtoToEntity(dto);
-                    player.setVideoId(videoId); // 비디오 ID 설정
+                    player.setVideoId(videoId);
                     return player;
                 })
                 .collect(Collectors.toList());
         playerDataRepository.saveAll(players);
+        videoStatusMap.put(videoId, "completed");
     }
 
     private Player dtoToEntity(PlayerDto dto) {
@@ -44,8 +48,8 @@ public class DataService {
         player.setTrackId(dto.getTrackId());
         player.setTeam(dto.getTeam());
         player.setJerseyNumber(dto.getJerseyNumber());
-        player.setVideoId(dto.getVideoId()); // 비디오 ID 설정
-        player.setFrameNumber(dto.getFrameNumber()); // 프레임 넘버 설정
+        player.setVideoId(dto.getVideoId());
+        player.setFrameNumber(dto.getFrameNumber());
         return player;
     }
 
@@ -61,5 +65,11 @@ public class DataService {
         return playerDataRepository.findByVideoId(videoId);
     }
 
+    public String getStatus(String taskId) {
+        return videoStatusMap.getOrDefault(taskId, "pending");
+    }
 
+    public void updateStatus(String videoId, String status) {
+        videoStatusMap.put(videoId, status);
+    }
 }
