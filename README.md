@@ -20,4 +20,6 @@ https://www.notion.so/5c3e2e605c564bfaa74d21c1fd3a81b0?v=f75aa56588cb43c58616d63
 - 특정 등번호 선수 필터링 기능, 플레이어 이름 추가 기능
 
 # 발표 시연영상
-[팀 익명성 본선]()
+[팀 익명성 본선](https://github.com/awzs12/Soccer_AI_BE/blob/main/%EC%B5%9C%EC%A2%85%EC%8B%9C%EC%97%B0%EC%98%81%EC%83%81.mp4)
+
+https://github.com/awzs12/Soccer_AI_BE/blob/main/%EC%9D%B5%EB%AA%85%EC%84%B1_%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pdf
